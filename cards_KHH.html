@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>			
+	<!-- Compiled and minified CSS -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+	<!-- Compiled and minified JavaScript -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+	
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<title>Parallax Template - Materialize</title>
+
+	<!-- CSS  -->
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+	<link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+	<!-- Compiled and minified JavaScript -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+	<!--Let browser know website is optimized for mobile-->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<!-- 利用Google Visualization讀取Google Sheet https://www.labnol.org/code/google-sheet-d3js-visualization-200608 -->
+	<script src="https://www.gstatic.com/charts/loader.js"></script>
+	
+	<!--CSS設定-->
+    <style>
+        /* 將圖片大小設定為左半邊 */
+        .left-half img {
+            width: 100%;
+            height: auto;
+        }
+
+		
+		
+}
+    </style>
+  
+	
+	<script>
+
+			
+	<!--使用資料庫-->
+	
+	// 取得網址裡的參數 
+		function GetUrlVar(VarName) 
+		{
+		  name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+		  var regexS = "[\\?&]" + VarName + "=([^&#]*)";
+		  var regex = new RegExp(regexS);
+		  var results = regex.exec(window.location.href);
+          
+		  if (results == null)
+		   	 return "";
+		  else
+			 return results[1];
+		}
+
+		// https://developers.google.com/chart/interactive/docs/quick_start
+		// Load the Visualization API and the corechart package.
+		google.charts.load('current', {'packages':['corechart']});
+
+		// Set a callback to run when the Google Visualization API is loaded.	
+		google.charts.setOnLoadCallback(init);
+		
+		function init() {
+			// 要先取得網址裡的路徑起點終點經緯度參數 
+			var n = decodeURIComponent(GetUrlVar('id'));
+			var queryStr = "select * where A =" + n;
+			// 這個例子使用的試算表是 https://docs.google.com/spreadsheets/d/1QScI5d56Kh-LGywY4WR6EvRGPcalFQYUAdqMxbFVDvk/copy
+			// 將上述試算表另存副本後，你要在自己的雲端硬碟將該試算表設定成[知道連結的使用者都能查看]。
+			// 然後讓程式讀取 https://docs.google.com/spreadsheets/d/瀏覽器網址列上的網址擷取序號部分/gviz/tq?sheet=工作表名稱
+			// 也就是將下列的 1QScI5d56Kh-LGywY4WR6EvRGPcalFQYUAdqMxbFVDvk 更換成自己的檔案序號，以及最後部分指讀取哪個工作表。
+			var url =
+			'https://docs.google.com/spreadsheets/d/1majOI4VB4cNDN0kjZ4M3l0EkBxGeXVOGK99u_VG4zio/gviz/tq?sheet=高雄';
+			var query = new google.visualization.Query(url);
+			query.setQuery(queryStr);
+			query.send(processSheetsData);
+		}	
+		
+		
+		function processSheetsData(response) {
+		  var data = response.getDataTable();
+		  var columns = data.getNumberOfColumns();
+		  var rows = data.getNumberOfRows();
+			
+		  var  s = '';
+          for(let r = 0; r < rows; r++){
+			s +=`<div class="container">
+					<div class="row">
+						<div class="col s12 m6 l6">
+							<div class="left-half">
+                                <h4 style="color: light-blue darken-3"><b>${data.getFormattedValue(r,1)}</b></h4>
+                                <div><img src="${data.getFormattedValue(r,7)}"></div>
+                            </div>
+						</div>
+						
+						<div class="col s12 m6 l6">
+                       
+                          <h5 class="light-blue-text text-darken-3">簡介</h5>
+						  <h6 style="color: light-blue darken-3">${data.getFormattedValue(r,4)}</h6>
+                          <br>
+                          <h5 class="light-blue-text text-darken-3">連絡電話</h5>
+						  <h6 style="color: light-blue darken-3">${data.getFormattedValue(r,5)}</h6>
+                          <br>
+                          <h5 class="light-blue-text text-darken-3">營業時間</h5>
+						  <h6 style="color: light-blue darken-3">${data.getFormattedValue(r,3)}</h6>
+                          <br>
+                          <h5 class="light-blue-text text-darken-3">地址</h5>
+						  <a href="http://maps.google.com.tw/maps?f=q&hl=zh-TW&geocode=&q=${data.getFormattedValue(r,2)}" style="color:gray">${data.getFormattedValue(r,2)}</a>
+                          <br>
+                          <h5 class="light-blue-text text-darken-3">官方網頁</h5>
+						  <a href="${data.getFormattedValue(r,6)} " style="color:gray">${data.getFormattedValue(r,6)}</a>
+              
+						</div>
+						
+					</div>
+				</div>`;
+          }
+		  
+		  document.getElementById("show_info").innerHTML = s;
+		}
+      </script>
+      
+</head>
+
+
+<body>
+<!--  navbar -->
+  <nav class="white" role="navigation">
+    <div class="nav-wrapper container">
+      <a id="logo-container"  class="brand-logo" href="index.html">Livehouse in Taiwan</a>
+
+      <ul class="right hide-on-med-and-down">
+        <li><a href="index.html #index-banner">01 簡介</a></li>
+		<li><a href="index.html #suggest">02 推薦</a></li>
+		<li><a href="index.html #city">03 城市</a></li>
+		<li><a href="index.html #feedback">04 回饋</a></li>
+      </ul>
+
+
+      <ul id="nav-mobile" class="sidenav ">
+        <li><a href="index.html #index-banner">簡介</a></li>
+		<li><a href="index.html #suggest">推薦</a></li>
+		<li><a href="index.html #city" class = "grey-text text-darken-1">城市</a></li>
+		<li><a href="info_TPE.html">台北</a></li>
+		<li><a href="info_NTC.html">新北</a></li>
+		<li><a href="info_HSZ.html">新竹</a></li>
+		<li><a href="info_TXG.html">台中</a></li>
+		<li><a href="info_TNN.html">台南</a></li>
+		<li><a href="info_KHH.html">高雄</a></li>
+		<li><a href="index.html #feedback">回饋</a></li>
+      </ul>
+      <a href="#" data-target="nav-mobile" class="sidenav-trigger light-blue-text darken-3-text"><i class="material-icons">menu</i></a>
+    </div>
+  </nav>
+  
+
+<!--   內容   -->
+<br><br><br>
+
+
+	<!--  內容展示  -->
+	<div id="show_info">
+	</div>
+	
+
+
+<br><br><br>
+
+
+
+  <footer class="page-footer grey darken-2">
+    <div class="container grey darken-2">
+      <div class="row">
+        
+        <div class="col l3 s12">
+          <h5 class="white-text">聯絡我們</h5>
+          <ul>
+            <li><a class="white-text">Gmail Address : 94ruthtsai@gmail.com</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-copyright grey darken-3">
+      <div class="container grey darken-3">
+      Made by <a class="brown-text text-lighten-3" >Yo(♡˙︶˙♡)</a>
+      </div>
+    </div>
+  </footer>
+
+
+  <!--  Scripts -->
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="js/materialize.js"></script>
+  
+  
+	<!--  初始化 -->
+	<script>
+	$(document).ready(function(){
+	$('.parallax').parallax();
+	$('.sidenav').sidenav();
+	$('.materialboxed').materialbox();
+	});
+	
+    // 放置錨點滑動初始化程式碼
+    document.addEventListener('DOMContentLoaded', function() {
+      var elems = document.querySelectorAll('a[href^="#"]');
+      elems.forEach(function(anchor) {
+        anchor.addEventListener('click', function(e) {
+          e.preventDefault();
+
+          var target = document.querySelector(this.getAttribute('href'));
+          target.scrollIntoView({
+            behavior: 'smooth'
+          });
+        });
+      });
+    });
+  </script>
+  </body>
+</html>
+

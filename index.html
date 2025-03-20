@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<!-- 控制圖片長寬比 -->
+	<style>
+	  .card-image img {
+		width: 100%; // 讓圖片填滿其父元素的寬度 
+		height: 100%; //讓圖片填滿其父元素的高度 
+		object-fit: cover; //讓圖片按比例放大或縮小以填滿容器，同時保持其長寬比例 
+		aspect-ratio: 3 / 2; // 設定圖片的寬高比例，這裡假設為3:2 
+	  }
+	</style>
+	
+
+		<!-- Compiled and minified CSS -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+	<!-- Compiled and minified JavaScript -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+	
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<title>Parallax Template - Materialize</title>
+
+	<!-- CSS  -->
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+	<link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+	<!-- Compiled and minified JavaScript -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+	<!--Let browser know website is optimized for mobile-->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<!-- 利用Google Visualization讀取Google Sheet https://www.labnol.org/code/google-sheet-d3js-visualization-200608 -->
+	<script src="https://www.gstatic.com/charts/loader.js"></script>
+	
+	<!--使用資料庫-->
+	<script>
+		title = [];
+		pic_url = [];
+		
+		
+		// https://developers.google.com/chart/interactive/docs/quick_start
+		// Load the Visualization API and the corechart package.
+		google.charts.load('current', {'packages':['corechart']});
+
+		// Set a callback to run when the Google Visualization API is loaded.	
+		google.charts.setOnLoadCallback(init);
+
+		function init() {
+		  // 這個例子使用的試算表是 https://docs.google.com/spreadsheets/d/1QScI5d56Kh-LGywY4WR6EvRGPcalFQYUAdqMxbFVDvk/copy
+		  // 將上述試算表另存副本後，你要在自己的雲端硬碟將該試算表設定成[知道連結的使用者都能查看]。
+		  // 然後讓程式讀取 https://docs.google.com/spreadsheets/d/瀏覽器網址列上的網址擷取序號部分/gviz/tq?sheet=工作表名稱
+		  // 也就是將下列的 1QScI5d56Kh-LGywY4WR6EvRGPcalFQYUAdqMxbFVDvk 更換成自己的檔案序號，以及最後部分指讀取哪個工作表。
+		  var url =
+			'https://docs.google.com/spreadsheets/d/1majOI4VB4cNDN0kjZ4M3l0EkBxGeXVOGK99u_VG4zio/gviz/tq?sheet=推薦';
+		  var query = new google.visualization.Query(url);
+		  query.setQuery('select *');
+		  query.send(processSheetsData);
+		}	
+		
+		function processSheetsData(response) {
+		  var data = response.getDataTable();
+		  var columns = data.getNumberOfColumns();
+		  var rows = data.getNumberOfRows();
+		  var  s = '';
+		  
+		  for (var r=0 ; r<rows ; r++) {
+			  <!--用反引號``包夾就可以不用一直s+=''..... 變數用${變數}-->	
+			  s +=`	<div class="col s12 m6 l4">
+					  <div class="card">
+						<div class="card-image">
+						  <img src="${data.getFormattedValue(r,7)}" style="object-fit: cover; aspect-ratio: 3 / 2;">
+						</div>
+						<div class="card-content">
+						  <p>${data.getFormattedValue(r,1)}</p>
+						</div>
+						<div class="card-action">
+							<a href="cards_SUG.html?id=${data.getFormattedValue(r,0)}">詳細資訊</a>
+						</div>
+					  </div>
+					</div>
+				  `;	  		
+		  }
+		  document.getElementById("demo").innerHTML = s
+		  
+		}
+		
+				
+		<!--留言板-->	
+		function formresponse() {
+			var name = document.forms["myform"]["name"].value;
+			var message = document.forms["myform"]["message"].value;
+
+			if (name == null || name == "") {
+				alert("請輸入暱稱");
+				return false;
+			} else if (message == null || message == "") {
+				alert("請輸入回饋");
+				return false;
+			} else {
+				alert("收到你的回饋囉！");
+				var MySubmit = "https://docs.google.com/forms/d/e/1FAIpQLSfeNo1eYQJWP0YXN_lls4QCjYNHo-nW-gAbqPUI1KfB0cDavg/formResponse?entry.97153989=" + name + "&entry.523160170=" + message + "&submit=Submit";
+				var NewOpen = window.open(MySubmit);
+				document.forms["myform"]["name"].value = "";
+				document.forms["myform"]["message"].value = "";
+				return false;
+			}
+		}
+
+	
+		</script>
+</head>
+
+
+<body>
+<!--  navbar -->
+  <nav class="white" role="navigation">
+    <div class="nav-wrapper container">
+      <a id="logo-container"  class="brand-logo" href="index.html">Livehouse in Taiwan</a>
+
+      <ul class="right hide-on-med-and-down">
+        <li><a href="#index-banner">01 簡介</a></li>
+		<li><a href="#suggest">02 推薦</a></li>
+		<li><a href="#city">03 城市</a></li>
+		<li><a href="#feedback">04 回饋</a></li>
+      </ul>
+
+
+      <ul id="nav-mobile" class="sidenav ">
+        <li><a href="#index-banner">簡介</a></li>
+		<li><a href="#suggest">推薦</a></li>
+		<li><a href="#city" class = "grey-text text-darken-1">城市</a></li>
+		<li><a href="info_TPE.html">台北</a></li>
+		<li><a href="info_NTC.html">新北</a></li>
+		<li><a href="info_HSZ.html">新竹</a></li>
+		<li><a href="info_TXG.html">台中</a></li>
+		<li><a href="info_TNN.html">台南</a></li>
+		<li><a href="info_KHH.html">高雄</a></li>
+		<li><a href="#feedback">回饋</a></li>
+      </ul>
+      <a href="#" data-target="nav-mobile" class="sidenav-trigger light-blue-text darken-3-text"><i class="material-icons">menu</i></a>
+    </div>
+  </nav>
+  
+  <!--  第一區 Livehouse 介紹 -->
+  <div id="index-banner" class="parallax-container">
+    <div class="section no-pad-bot">
+      <div class="container">
+        <br><br>
+        <h1 class="header center light-blue-text text-accent-3 "> </h1>
+        <div class="row center">
+          <h4 class="brand-logo col s12 light">簡介 Livehouse 現場展演空間</h>
+        </div>
+        
+        <br><br>
+
+      </div>
+    </div>
+    <div class="parallax"><img src="https://image-cdn.hypb.st/https%3A%2F%2Fhk.hypebeast.com%2Ffiles%2F2023%2F12%2Fclockenflap-2023-recap-09.jpg?cbr=1&q=90" alt="Unsplashed background img 1"></div>
+  </div>
+
+
+  <div class="container">
+    <div class="section">
+		
+      <!--   Icon Section   -->
+      <div class="row">
+        <div class="col s12 m6">
+          <div class="icon-block">
+            <h2 class="center brown-text"><i class="material-icons grey-text darken-3-text">mic_external_on</i></h2>
+            <h5 class="center">城市音樂生活</h5>
+
+            <p class="light">「音樂生活」是城市性格最簡單的溝通媒介。可以是搖滾，可能是街頭音樂、傳統民謠、樂器演奏、爵士樂或任何旋律。由「城市生態系統」的角度，來看待酒吧、音樂咖啡館、餐廳、音樂場館......這些「現場音樂場所」（venue-based live music）。這些有現場、原創音樂的場地，既攸關音樂產業的發展，也是一個有機的城市生態，一個「創新的熱點、培育人才的空間」。</p>
+          </div>
+        </div>
+
+        <div class="col s12 m6">
+          <div class="icon-block">
+            <h2 class="center brown-text"><i class="material-icons grey-text darken-3-text">psychology_alt</i></h2>
+            <h5 class="center">典型印象</h5>
+
+            <p class="light">是辦理表演的場域，是擁有舞台、音響設備、燈光等設施的展演空間，同時周邊也常會設有酒吧和休息區，讓觀眾在演出期間可以享受音樂和飲品。</p>
+          </div>
+        </div>
+
+       
+      </div>
+	 
+    </div>
+	<div class="row center">
+          <a href="https://zh.wikipedia.org/zh-tw/%E5%B1%95%E6%BC%94%E7%A9%BA%E9%96%93" id="download-button" class="btn-large waves-effect waves-light black">Learn more</a>
+    </div>
+  </div>
+
+<!--   第二區 推薦   -->
+  <div class="parallax-container valign-wrapper" id="suggest">
+    <div class="section no-pad-bot">
+      <div class="container">
+        <div class="row center">
+          <h4 class="brand-logo col s12 light">推推！台灣 Livehouse</h4>
+        </div>
+      </div>
+    </div>
+    <div class="parallax"><img src="https://www.twreporter.org/images/20160815094421-b21b7ec786d859e70e8c1c357fa6b27e-mobile.jpg" alt="Unsplashed background img 2"></div>
+  </div>
+
+  <div class="container">
+    <div class="section">
+
+      <div class="row">
+        <div class="col s12 center">
+          
+          <p class="left-align light">精選全台六間Livehouse</p>
+			<!--   引用卡片   -->
+			<div class="row" id = "demo"></div>
+		</div>
+      </div>
+
+    </div>
+  </div>
+  
+<!--   第三區 城市   -->
+  <div class="parallax-container valign-wrapper" id="city">
+    <div class="section no-pad-bot">
+      <div class="container">
+        <div class="row center">
+          <h4 class="brand-logo col s12 light">選擇你想去的城市吧！</h4>
+        </div>
+      </div>
+    </div>
+	<div class="parallax"><img src="https://cdn.ftvnews.com.tw/manasystem/FileData/News/c756364d-2a4f-45f9-8539-ab333e1cf872.jpg" alt="Unsplashed background img 3"></div>
+  </div>
+  
+	<div class="section" id="city">
+	  <div class="container center">
+		<div class="row">
+		<div class="col s12 m6">
+			<img class="materialboxed responsive-img" src="https://lh5.googleusercontent.com/-99Y0OPwmyJ8/Tl7czzSL4zI/AAAAAAAAeFc/mgfyNXmR0Ho/s512/%2525E5%25258F%2525B0%2525E7%252581%2525A3%2525E8%2525A1%25258C%2525E6%252594%2525BF%2525E5%25258D%252580_%2525E9%2525BB%252591.JPG" alt="City Image">
+		  </div>
+
+		  <div class="col s12 m6">
+		    <h5 class="brand-logo light">【城市地標】</h5>
+			<br>
+			<div class="row">
+			  <div class="col s12">
+				<a href="info_TPE.html" class="waves-effect waves-light btn black mb-2"><i class="material-icons left">location_on</i>台北</a>
+			  <br><br>
+			  </div>
+			  
+			  <div class="col s12">
+				<a href="info_NTC.html" class="waves-effect waves-light btn black mb-2"><i class="material-icons left">location_on</i>新北</a>
+			  <br><br>
+			  </div>
+			  
+			  <div class="col s12">
+				<a href="info_HSZ.html" class="waves-effect waves-light btn black mb-2"><i class="material-icons left">location_on</i>新竹</a>
+			  <br><br>
+			  </div>
+			  
+			  <div class="col s12">
+				<a href="info_TXG.html" class="waves-effect waves-light btn black mb-2"><i class="material-icons left">location_on</i>台中</a>
+			  <br><br>
+			  </div>
+			  
+			  <div class="col s12">
+				<a href="info_TNN.html" class="waves-effect waves-light btn black mb-2"><i class="material-icons left">location_on</i>台南</a>
+			  <br><br>
+			  </div>
+			  
+			  <div class="col s12">
+				<a href="info_KHH.html" class="waves-effect waves-light btn black mb-2"><i class="material-icons left">location_on</i>高雄</a>
+			  </div>
+			</div>
+		  </div>
+		  
+		</div>
+	  </div>
+	</div>
+	 </div>
+
+
+<!--   第四區 回饋   -->
+  <div class="parallax-container valign-wrapper" id="feedback">
+    <div class="section no-pad-bot">
+      <div class="container">
+        <div class="row center">
+          <h4 class="brand-logo col s12 light">這些場館你去了哪些呢？留下回饋吧！</h4>
+        </div>
+      </div>
+    </div>
+    <div class="parallax"><img src="https://www.twreporter.org/images/20160815095631-069399aaa6f5aec9ead58bb3c258ace6-mobile.jpg" alt="Unsplashed background img 2"></div>
+  </div>
+
+
+    <div class="section">
+		<div class="container">
+			<form name="myform" action="javascript:formresponse();">
+				<div class="row">
+					<div class="col l6 s12">
+						<input class="form-control" id="name" name="name" placeholder="暱稱" type="text" required=''>
+					</div>
+					<div class="col-12 center">
+						<textarea class="form-control" id="message" name="message" placeholder="留言" rows="7"></textarea>
+						<button class="btn waves-effect waves-light black left" type="submit" value="Submit">提交</button>
+						<div class="container right">
+							<a href="feed_back.html" class="waves-effect waves-light btn grey darken-2">查看留言板</a>
+						</div>
+					</div>
+				</div>
+									  
+			</form>
+			
+		</div>
+    </div>
+	
+	
+
+
+
+  <footer class="page-footer grey darken-2">
+    <div class="container grey darken-2">
+      <div class="row">
+        
+        <div class="col l3 s12">
+          <h5 class="white-text">聯絡我們</h5>
+          <ul>
+            <li><a class="white-text">Gmail Address : 94ruthtsai@gmail.com</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-copyright grey darken-3">
+      <div class="container grey darken-3">
+            Made by <a class="brown-text text-lighten-3" >Yo(♡˙︶˙♡)</a>
+      </div>
+    </div>
+  </footer>
+
+
+  <!--  Scripts -->
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="js/materialize.js"></script>
+  
+  
+	<!--  初始化 -->
+	<script>
+	$(document).ready(function(){
+	$('.parallax').parallax();
+	$('.sidenav').sidenav();
+	$('.materialboxed').materialbox();
+	});
+	
+    // 放置錨點滑動初始化程式碼
+    document.addEventListener('DOMContentLoaded', function() {
+      var elems = document.querySelectorAll('a[href^="#"]');
+      elems.forEach(function(anchor) {
+        anchor.addEventListener('click', function(e) {
+          e.preventDefault();
+
+          var target = document.querySelector(this.getAttribute('href'));
+          target.scrollIntoView({
+            behavior: 'smooth'
+          });
+        });
+      });
+    });
+	</script>
+	<!-- 在文檔中引入 Bootstrap 的 JavaScript 庫 -->
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	
+  </body>
+</html>
+

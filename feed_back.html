@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>			
+		<!-- Compiled and minified CSS -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+	<!-- Compiled and minified JavaScript -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+	
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<title>Parallax Template - Materialize</title>
+
+	<!-- CSS  -->
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+	<link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+	<!--Let browser know website is optimized for mobile-->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<!-- 利用Google Visualization讀取Google Sheet https://www.labnol.org/code/google-sheet-d3js-visualization-200608 -->
+	<script src="https://www.gstatic.com/charts/loader.js"></script>
+	
+	<!--使用資料庫-->
+	<script>
+		google.charts.load('current', {'packages':['corechart']});
+		google.charts.setOnLoadCallback(init);
+
+		function init() {
+			var url = 'https://docs.google.com/spreadsheets/d/1t3x_ch8RF2XEytbHKqiIyNBpwjxeJLhSNBsvUabLWbE/gviz/tq?sheet=回應';
+			var query = new google.visualization.Query(url);
+			query.setQuery('select *');
+			query.send(processSheetsData);
+		}	
+		
+		function processSheetsData(response) {
+			var data = response.getDataTable();
+			var rows = data.getNumberOfRows();
+			
+			var str = "";
+			for (var r = rows - 1; r >= 0; r-- ){
+				str += `<div class="card" align="center">
+							<div class="card-body">
+								${data.getFormattedValue(r,1)} 留下：「${data.getFormattedValue(r,2)}」
+							</div>
+						</div>`;
+			}
+			document.getElementById("demo").innerHTML = str;
+		}
+	</script>
+
+</head>
+
+
+<body>
+<!--  navbar -->
+  <nav class="white" role="navigation">
+    <div class="nav-wrapper container">
+      <a id="logo-container"  class="brand-logo" href="index.html">Livehouse in Taiwan</a>
+
+      <ul class="right hide-on-med-and-down">
+        <li><a href="index.html #index-banner">01 簡介</a></li>
+		<li><a href="index.html #suggest">02 推薦</a></li>
+		<li><a href="index.html #city">03 城市</a></li>
+		<li><a href="index.html #feedback">04 回饋</a></li>
+      </ul>
+
+
+      <ul id="nav-mobile" class="sidenav ">
+        <li><a href="index.html #index-banner">簡介</a></li>
+		<li><a href="index.html #suggest">推薦</a></li>
+		<li><a href="index.html #city" class = "grey-text text-darken-1">城市</a></li>
+		<li><a href="info_TPE.html">台北</a></li>
+		<li><a href="info_NTC.html">新北</a></li>
+		<li><a href="info_HSZ.html">新竹</a></li>
+		<li><a href="info_TXG.html">台中</a></li>
+		<li><a href="info_TNN.html">台南</a></li>
+		<li><a href="info_KHH.html">高雄</a></li>
+		<li><a href="index.html #feedback">回饋</a></li>
+      </ul>
+      <a href="#" data-target="nav-mobile" class="sidenav-trigger light-blue-text darken-3-text"><i class="material-icons">menu</i></a>
+    </div>
+  </nav>
+  
+
+	<!--   標題   -->
+	<div class="parallax-container valign-wrapper">
+		<div class="section no-pad-bot">
+			<div class="container">
+				<h1 class="center"><font color="#FFFFFF"><b>回應與回饋</b></font></h1>
+			</div>
+		</div>
+		<div class="parallax"><img src="https://images.unsplash.com/uploads/1412282232015a06e258a/4bdd2a58?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8ZGFyayUyMGJhY2tncm91bmQlMjBtdXNpY3xlbnwwfHwwfHx8MA%3D%3D"></div>
+	</div>
+
+	
+<br><br>
+
+
+	<!--  留言文字展示  -->
+	<div class="container">
+		<div class="row">
+			<h4 align="center">
+				上至下由新到舊排列
+			</h4>
+			<div id="demo"></div>
+		</div>
+	</div>
+
+<br><br>
+
+
+
+
+
+
+  <footer class="page-footer grey darken-2">
+    <div class="container grey darken-2">
+      <div class="row">
+        
+        <div class="col l3 s12">
+          <h5 class="white-text">聯絡我們</h5>
+          <ul>
+            <li><a class="white-text">Gmail Address : 94ruthtsai@gmail.com</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-copyright grey darken-3">
+      <div class="container grey darken-3">
+      Made by <a class="brown-text text-lighten-3" >Yo(♡˙︶˙♡)</a>
+      </div>
+    </div>
+  </footer>
+
+
+  <!--  Scripts -->
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="js/materialize.js"></script>
+  
+  
+	<!--  初始化 -->
+	<script>
+	$(document).ready(function(){
+	$('.parallax').parallax();
+	$('.sidenav').sidenav();
+	$('.materialboxed').materialbox();
+	});
+	
+    // 放置錨點滑動初始化程式碼
+    document.addEventListener('DOMContentLoaded', function() {
+      var elems = document.querySelectorAll('a[href^="#"]');
+      elems.forEach(function(anchor) {
+        anchor.addEventListener('click', function(e) {
+          e.preventDefault();
+
+          var target = document.querySelector(this.getAttribute('href'));
+          target.scrollIntoView({
+            behavior: 'smooth'
+          });
+        });
+      });
+    });
+  </script>
+  </body>
+</html>
+

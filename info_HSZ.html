@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<!-- 控制圖片長寬比 -->
+	<style>
+	  .card-image img {
+		width: 100%; // 讓圖片填滿其父元素的寬度 
+		height: 100%; //讓圖片填滿其父元素的高度 
+		object-fit: cover; //讓圖片按比例放大或縮小以填滿容器，同時保持其長寬比例 
+		aspect-ratio: 3 / 2; // 設定圖片的寬高比例，這裡假設為3:2 
+	  }
+	</style>
+			
+	<!-- Compiled and minified CSS -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+	<!-- Compiled and minified JavaScript -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+	
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<title>Parallax Template - Materialize</title>
+
+	<!-- CSS  -->
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+	<link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+	<!-- Compiled and minified JavaScript -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+	<!--Let browser know website is optimized for mobile-->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<!-- 利用Google Visualization讀取Google Sheet https://www.labnol.org/code/google-sheet-d3js-visualization-200608 -->
+	<script src="https://www.gstatic.com/charts/loader.js"></script>
+	
+	
+	
+	<!--使用資料庫(卡片)-->
+	<script>
+		
+		
+		// https://developers.google.com/chart/interactive/docs/quick_start
+		// Load the Visualization API and the corechart package.
+		google.charts.load('current', {'packages':['corechart']});
+
+		// Set a callback to run when the Google Visualization API is loaded.	
+		google.charts.setOnLoadCallback(init);
+
+		function init() {
+		  // 這個例子使用的試算表是 https://docs.google.com/spreadsheets/d/1QScI5d56Kh-LGywY4WR6EvRGPcalFQYUAdqMxbFVDvk/copy
+		  // 將上述試算表另存副本後，你要在自己的雲端硬碟將該試算表設定成[知道連結的使用者都能查看]。
+		  // 然後讓程式讀取 https://docs.google.com/spreadsheets/d/瀏覽器網址列上的網址擷取序號部分/gviz/tq?sheet=工作表名稱
+		  // 也就是將下列的 1QScI5d56Kh-LGywY4WR6EvRGPcalFQYUAdqMxbFVDvk 更換成自己的檔案序號，以及最後部分指讀取哪個工作表。
+		  var url =
+			'https://docs.google.com/spreadsheets/d/1majOI4VB4cNDN0kjZ4M3l0EkBxGeXVOGK99u_VG4zio/gviz/tq?sheet=新竹';
+		  var query = new google.visualization.Query(url);
+		  query.setQuery('select *');
+		  query.send(processSheetsData);
+		}	
+		
+		function processSheetsData(response) {
+		  var data = response.getDataTable();
+		  var columns = data.getNumberOfColumns();
+		  var rows = data.getNumberOfRows();
+		  var  s = '';
+		  
+		  for (var r=0 ; r<rows ; r++) {
+			  <!--用反引號``包夾就可以不用一直s+=''..... 變數用${變數}-->	
+			  s +=`	<div class="col s12 m6 l4">
+					  <div class="card">
+						<div class="card-image">
+						  <img src="${data.getFormattedValue(r,7)}" style="object-fit: cover; aspect-ratio: 3 / 2;">
+						</div>
+						<div class="card-content">
+						  <p>${data.getFormattedValue(r,1)}</p>
+						</div>
+						<div class="card-action">
+							<a href="cards_HSZ.html?id=${data.getFormattedValue(r,0)}">詳細資訊</a>
+						</div>
+					  </div>
+					</div>
+				  `;	  		
+		  }
+		  document.getElementById("demo").innerHTML = s
+		  
+		}
+		
+				
+	
+		</script>
+</head>
+
+
+<body>
+<!--  navbar -->
+  <nav class="white" role="navigation">
+    <div class="nav-wrapper container">
+      <a id="logo-container"  class="brand-logo" href="index.html">Livehouse in Taiwan</a>
+
+      <ul class="right hide-on-med-and-down">
+        <li><a href="index.html #index-banner">01 簡介</a></li>
+		<li><a href="index.html #suggest">02 推薦</a></li>
+		<li><a href="index.html #city">03 城市</a></li>
+		<li><a href="index.html #feedback">04 回饋</a></li>
+      </ul>
+
+
+      <ul id="nav-mobile" class="sidenav ">
+        <li><a href="index.html #index-banner">簡介</a></li>
+		<li><a href="index.html #suggest">推薦</a></li>
+		<li><a href="index.html #city" class = "grey-text text-darken-1">城市</a></li>
+		<li><a href="info_TPE.html">台北</a></li>
+		<li><a href="info_NTC.html">新北</a></li>
+		<li><a href="info_HSZ.html">新竹</a></li>
+		<li><a href="info_TXG.html">台中</a></li>
+		<li><a href="info_TNN.html">台南</a></li>
+		<li><a href="info_KHH.html">高雄</a></li>
+		<li><a href="index.html #feedback">回饋</a></li>
+      </ul>
+      <a href="#" data-target="nav-mobile" class="sidenav-trigger light-blue-text darken-3-text"><i class="material-icons">menu</i></a>
+    </div>
+  </nav>
+  
+
+<!--   標題   -->
+  <div class="parallax-container valign-wrapper">
+    <div class="section no-pad-bot">
+      <div class="container">
+        <div class="row center">
+          <h4 class="brand-logo col s12 light"><font color="#FFFFFF"><b>新竹市</b></font></h4>
+        </div>
+      </div>
+    </div>
+    <div class="parallax"><img src="https://images.unsplash.com/photo-1453090927415-5f45085b65c0?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YmxhY2slMjBtdXNpY3xlbnwwfHwwfHx8MA%3D%3D" alt="Unsplashed background"></div>
+  </div>
+
+  <div class="container">
+    <div class="section">
+
+      <div class="row">
+        <div class="col s12 center">
+			<!--   引用卡片   -->
+			<div class="row" id = "demo"></div>
+		</div>
+      </div>
+
+    </div>
+  </div>
+
+
+
+  <footer class="page-footer grey darken-2">
+    <div class="container grey darken-2">
+      <div class="row">
+        
+        <div class="col l3 s12">
+          <h5 class="white-text">聯絡我們</h5>
+          <ul>
+            <li><a class="white-text">Gmail Address : 94ruthtsai@gmail.com</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-copyright grey darken-3">
+      <div class="container grey darken-3">
+      Made by <a class="brown-text text-lighten-3" >Yo(♡˙︶˙♡)</a>
+      </div>
+    </div>
+  </footer>
+
+
+  <!--  Scripts -->
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="js/materialize.js"></script>
+  
+  
+	<!--  初始化 -->
+	<script>
+	$(document).ready(function(){
+	$('.parallax').parallax();
+	$('.sidenav').sidenav();
+	$('.materialboxed').materialbox();
+	});
+	
+    // 放置錨點滑動初始化程式碼
+    document.addEventListener('DOMContentLoaded', function() {
+      var elems = document.querySelectorAll('a[href^="#"]');
+      elems.forEach(function(anchor) {
+        anchor.addEventListener('click', function(e) {
+          e.preventDefault();
+
+          var target = document.querySelector(this.getAttribute('href'));
+          target.scrollIntoView({
+            behavior: 'smooth'
+          });
+        });
+      });
+    });
+  </script>
+  </body>
+</html>
+
